@@ -48,7 +48,7 @@ function reply(body, status, headers) {
     status,
     headers: {
       ...headers,
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json; charset=utf-8',
       'Cache-Control': 'no-store',
     },
   });
