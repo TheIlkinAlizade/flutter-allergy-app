@@ -11,7 +11,12 @@ class RiskContribution {
   final IngredientMatch match;
   final Severity severity;
 
-  double get value => severity.weight * match.confidence.weight;
+  bool get isTrace => match.isTrace;
+
+  double get value {
+    final base = severity.weight * match.confidence.weight;
+    return isTrace ? base * RiskConstants.crossContaminationFactor : base;
+  }
 }
 
 class RiskResult {
@@ -19,12 +24,14 @@ class RiskResult {
     required this.score,
     required this.level,
     required this.contributions,
+    required this.traceWarnings,
     required this.crossContaminationApplied,
   });
 
   final double score;
   final RiskLevel level;
   final List<RiskContribution> contributions;
+  final List<RiskContribution> traceWarnings;
   final bool crossContaminationApplied;
 }
 
@@ -40,36 +47,57 @@ class RiskCalculator {
     final strongest = <AllergenCategory, IngredientMatch>{};
     for (final match in matches) {
       if (!profile.containsKey(match.category)) continue;
-      final current = strongest[match.category];
-      if (current == null ||
-          match.confidence.weight > current.confidence.weight) {
+      if (_isStronger(match, strongest[match.category])) {
         strongest[match.category] = match;
       }
     }
 
-    final contributions = [
-      for (final entry in strongest.entries)
-        RiskContribution(match: entry.value, severity: profile[entry.key]!),
-    ];
+    final scored = <RiskContribution>[];
+    final warnings = <RiskContribution>[];
+    for (final entry in strongest.entries) {
+      final contribution = RiskContribution(
+        match: entry.value,
+        severity: profile[entry.key]!,
+      );
+      if (contribution.isTrace && !crossContaminationEnabled) {
+        warnings.add(contribution);
+      } else {
+        scored.add(contribution);
+      }
+    }
 
-    final base = contributions.fold<double>(0, (sum, c) => sum + c.value);
-    final crossApplied = crossContaminationEnabled && hasTraceWarning;
-    final score = crossApplied
-        ? base * (1 + RiskConstants.crossContaminationFactor)
-        : base;
+    final hasTraceSignal = hasTraceWarning || matches.any((m) => m.isTrace);
+    final crossApplied = crossContaminationEnabled && hasTraceSignal;
+    final multiplier =
+        crossApplied ? 1 + RiskConstants.crossContaminationFactor : 1.0;
+
+    final directSum = _sum(scored.where((c) => !c.isTrace));
+    final traceSum = _sum(scored.where((c) => c.isTrace));
+    final score = directSum * multiplier + traceSum;
 
     return RiskResult(
       score: score,
-      level: _levelFor(score, contributions),
-      contributions: contributions,
+      level: _levelFor(score, scored),
+      contributions: scored,
+      traceWarnings: warnings,
       crossContaminationApplied: crossApplied,
     );
   }
 
-  RiskLevel _levelFor(double score, List<RiskContribution> contributions) {
-    if (contributions.isEmpty) return RiskLevel.safe;
+  bool _isStronger(IngredientMatch candidate, IngredientMatch? current) {
+    if (current == null) return true;
+    if (candidate.isTrace != current.isTrace) return !candidate.isTrace;
+    return candidate.confidence.weight > current.confidence.weight;
+  }
+
+  double _sum(Iterable<RiskContribution> contributions) {
+    return contributions.fold<double>(0, (sum, c) => sum + c.value);
+  }
+
+  RiskLevel _levelFor(double score, List<RiskContribution> scored) {
+    if (scored.isEmpty) return RiskLevel.safe;
     final hasAnaphylaxis =
-        contributions.any((c) => c.severity == Severity.anaphylaxis);
+        scored.any((c) => c.severity == Severity.anaphylaxis);
     if (hasAnaphylaxis || score >= RiskConstants.dangerThreshold) {
       return RiskLevel.danger;
     }

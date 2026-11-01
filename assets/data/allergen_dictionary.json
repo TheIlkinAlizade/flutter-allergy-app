@@ -1,0 +1,174 @@
+{
+  "version": 1,
+  "categories": {
+    "peanut": {
+      "direct": [
+        "peanut*", "groundnut*", "monkey nut*", "arachis*",
+        "araxid*", "yerfındığ*", "yer fındığ*", "yer fıstığ*", "yerfıstığ*",
+        "fıstık*", "fıstığ*",
+        "арахис*", "земляной орех", "земляного ореха"
+      ],
+      "derived": []
+    },
+    "tree_nut": {
+      "direct": [
+        "tree nut*", "nut", "nuts", "almond*", "hazelnut*", "walnut*", "cashew*",
+        "pecan*", "pistachio*", "macadamia*", "brazil nut*", "pine nut*",
+        "badam*", "fındıq*", "fındık*", "fındığ*", "qoz*", "kaju*", "püstə*",
+        "pekan*", "makadamiya*", "makadamya*", "badem*", "ceviz*",
+        "antep fıstığ*", "fıstık*", "fıstığ*",
+        "миндал*", "фундук*", "орех*", "грецк*", "кешью*", "фисташк*",
+        "пекан*", "макадами*"
+      ],
+      "derived": [
+        "marzipan*", "marsipan*", "марципан*", "nougat*", "nugat*", "нуга",
+        "pralin*", "пралин*", "gianduja*", "frangipane*", "amaretto*"
+      ]
+    },
+    "milk": {
+      "direct": [
+        "milk*", "dairy*", "cream", "cheese*", "yogurt*", "yoghurt*", "kefir*",
+        "curd*", "süd*", "kəsmik*", "qaymaq*", "pendir*", "qatıq*", "kərə yağ*",
+        "xama*", "dondurma*", "zərdab*", "süt*", "krema*", "peynir*", "yoğurt*",
+        "tereyağ*", "kaymak*", "ayran*",
+        "молок*", "молоч*", "кисломолочн*", "сливк*", "сливочн*",
+        "сыр", "сыра", "сыры", "сыром", "творог*", "йогурт*", "кефир*"
+      ],
+      "derived": [
+        "whey*", "casein*", "caseinate*", "lactalbumin*", "lactoglobulin*",
+        "lactoferrin*", "lactose*", "ghee", "butter", "butterfat",
+        "buttermilk*", "kazein*", "laktoz*", "peynir altı suyu",
+        "сыворотк*", "казеин*", "лактоз*"
+      ],
+      "exclude": [
+        "coconut milk", "coconut cream", "almond milk", "soy milk", "soya milk",
+        "oat milk", "rice milk", "hazelnut milk", "cashew milk", "milk thistle",
+        "cocoa butter", "shea butter", "peanut butter", "nut butter",
+        "almond butter", "cream of tartar",
+        "hindistan cevizi sütü", "badem sütü", "soya sütü", "yulaf sütü",
+        "pirinç sütü", "hindistan cevizi südü", "badam südü", "soya südü",
+        "yulaf südü", "düyü südü",
+        "кокосовое молоко", "миндальное молоко", "соевое молоко",
+        "овсяное молоко", "рисовое молоко"
+      ]
+    },
+    "egg": {
+      "direct": ["egg", "eggs", "yumurta*", "яйц*", "яиц*", "яичн*", "меланж*"],
+      "derived": [
+        "albumin*", "albumen", "ovalbumin*", "ovomucoid*", "lysozyme*",
+        "mayonnaise*", "meringue*", "e1105", "mayonez*", "майонез*",
+        "меренг*", "лизоцим*"
+      ]
+    },
+    "gluten": {
+      "direct": [
+        "gluten*", "qluten*", "wheat*", "barley*", "rye", "oat*", "spelt*",
+        "kamut*", "triticale*", "semolina*", "durum*", "couscous*", "bulgur*",
+        "seitan*", "einkorn*", "emmer*", "farina", "malt", "malted",
+        "buğda*", "arpa*", "çovdar*", "çavdar*", "yulaf*", "manna yarma*",
+        "irmik*", "makarna*", "makaron*", "kuskus*", "bulqur*",
+        "глютен*", "клейковин*", "пшениц*", "ячмен*", "рожь", "ржи", "ржан*",
+        "овес", "овса", "овсян*", "спельт*", "манная", "манной", "манка",
+        "булгур*", "кускус*", "макарон*", "солод*"
+      ],
+      "derived": [
+        "flour", "bran", "breadcrumb*", "bread crumb*", "biscuit*", "pasta*",
+        "noodle*", "мук*"
+      ],
+      "exclude": [
+        "rice flour", "corn flour", "maize flour", "potato flour",
+        "buckwheat flour", "almond flour", "coconut flour", "chickpea flour",
+        "soy flour", "soya flour", "tapioca flour", "rice bran",
+        "рисовая мука", "кукурузная мука", "гречневая мука", "миндальная мука",
+        "кокосовая мука", "соевая мука", "нутовая мука", "картофельная мука"
+      ]
+    },
+    "soy": {
+      "direct": [
+        "soy*", "soja*", "edamame*", "tofu*", "tempeh*", "miso", "natto",
+        "tamari", "shoyu", "соя", "сои", "сою", "соев*", "тофу"
+      ],
+      "derived": [
+        "lecithin*", "lesitin*", "лецитин*", "e322", "e426",
+        "hydrolysed vegetable protein*", "hydrolyzed vegetable protein*",
+        "textured vegetable protein*", "texturized vegetable protein*"
+      ]
+    },
+    "fish": {
+      "direct": [
+        "fish*", "salmon*", "tuna*", "cod", "anchov*", "sardine*", "mackerel*",
+        "herring*", "trout*", "haddock*", "pollock*", "tilapia*", "sea bass",
+        "carp", "surimi*", "bonito*", "caviar*", "roe",
+        "balıq*", "qızılbalıq*", "kilkə*", "siyənək*",
+        "balık*", "balığ*", "somon*", "hamsi*", "sardalya*", "uskumru*",
+        "levrek*", "çipura*", "morina*", "havyar*",
+        "рыб*", "лосос*", "семг*", "тунец", "тунц*", "треск*", "сельдь",
+        "сельди", "сельдью", "сельдей", "кильк*", "анчоус*", "сурими",
+        "минтай*", "хек", "горбуш*", "скумбри*"
+      ],
+      "derived": ["worcestershire*", "isinglass*", "nam pla"]
+    },
+    "shellfish": {
+      "direct": [
+        "shrimp*", "prawn*", "crab*", "lobster*", "crayfish*", "crawfish*",
+        "langoustine*", "scampi*", "krill*", "shellfish*", "crustacean*",
+        "mollusc*", "mollusk*", "clam*", "mussel*", "oyster*", "scallop*",
+        "squid*", "calamari*", "octopus*", "cuttlefish*", "abalone*",
+        "cockle*", "snail*", "escargot*",
+        "krevet*", "krab*", "omar*", "midiya*", "kalmar*", "ahtapot*",
+        "istiridye*", "dəniz məhsul*",
+        "karides*", "yengeç*", "ıstakoz*", "midye*", "kerevit*",
+        "kabuklu deniz*", "deniz ürün*", "deniz mahsul*",
+        "креветк*", "краб*", "омар*", "лангуст*", "мидии", "мидия", "мидий",
+        "кальмар*", "осьминог*", "устриц*", "морепродукт*", "ракообразн*",
+        "моллюск*", "гребешок", "гребешк*", "криль*"
+      ],
+      "derived": []
+    },
+    "sesame": {
+      "direct": [
+        "sesame*", "sesamum*", "gingelly*", "benne*", "tahin*", "küncüt*",
+        "susam*", "кунжут*", "сезам*", "тахин*"
+      ],
+      "derived": [
+        "halva*", "halvah*", "helva*", "hummus*", "houmous*", "humus*",
+        "халва*", "хумус*"
+      ]
+    },
+    "celery": {
+      "direct": ["celery*", "celeriac*", "kərəviz*", "kereviz*", "сельдере*"],
+      "derived": []
+    },
+    "mustard": {
+      "direct": ["mustard*", "xardal*", "hardal*", "горчиц*", "горчичн*"],
+      "derived": []
+    },
+    "lupin": {
+      "direct": ["lupin*", "acı bakla", "люпин*"],
+      "derived": []
+    },
+    "sulphites": {
+      "direct": [
+        "sulfit*", "sulphit*", "metabisulfit*", "metabisulphit*",
+        "bisulfit*", "bisulphit*", "sulphur dioxide", "sulfur dioxide",
+        "kükürt dioksit*", "kükürd dioksid*",
+        "сульфит*", "диоксид серы", "двуокись серы", "сернистый ангидрид"
+      ],
+      "derived": [
+        "e220", "e221", "e222", "e223", "e224", "e225", "e226", "e227", "e228"
+      ]
+    },
+    "additives": {
+      "direct": [
+        "tartrazin*", "sunset yellow", "carmoisine*", "ponceau*", "allura red",
+        "quinoline yellow", "carmin*", "karmin*", "cochineal*", "benzoat*",
+        "glutamat*", "msg",
+        "тартразин*", "кармин*", "бензоат*", "глутамат*"
+      ],
+      "derived": [
+        "e102", "e104", "e110", "e120", "e122", "e124", "e129",
+        "e210", "e211", "e212", "e213", "e621"
+      ]
+    }
+  }
+}

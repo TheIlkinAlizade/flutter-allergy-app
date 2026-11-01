@@ -8,11 +8,13 @@ IngredientMatch match(
   AllergenCategory category, {
   MatchConfidence confidence = MatchConfidence.direct,
   String ingredient = 'ingredient',
+  bool isTrace = false,
 }) {
   return IngredientMatch(
     ingredient: ingredient,
     category: category,
     confidence: confidence,
+    isTrace: isTrace,
   );
 }
 
@@ -137,5 +139,60 @@ void main() {
     );
     expect(result.score, closeTo(4.0, 1e-9));
     expect(result.level, RiskLevel.danger);
+  });
+  test('a trace-only allergen is scored at half weight when enabled', () {
+    final result = calculator.calculate(
+      matches: [match(AllergenCategory.gluten, isTrace: true)],
+      profile: {AllergenCategory.gluten: Severity.mild},
+      crossContaminationEnabled: true,
+    );
+    expect(result.score, closeTo(0.5, 1e-9));
+    expect(result.level, RiskLevel.caution);
+    expect(result.traceWarnings, isEmpty);
+  });
+
+  test('a trace-only allergen is reported but not scored when disabled', () {
+    final result = calculator.calculate(
+      matches: [match(AllergenCategory.gluten, isTrace: true)],
+      profile: {AllergenCategory.gluten: Severity.mild},
+      crossContaminationEnabled: false,
+    );
+    expect(result.score, 0);
+    expect(result.level, RiskLevel.safe);
+    expect(result.traceWarnings, hasLength(1));
+  });
+
+  test('a trace-only anaphylaxis allergen is danger when enabled', () {
+    final result = calculator.calculate(
+      matches: [match(AllergenCategory.peanut, isTrace: true)],
+      profile: {AllergenCategory.peanut: Severity.anaphylaxis},
+      crossContaminationEnabled: true,
+    );
+    expect(result.score, closeTo(1.5, 1e-9));
+    expect(result.level, RiskLevel.danger);
+  });
+
+  test('a direct match wins over a trace match of the same category', () {
+    final result = calculator.calculate(
+      matches: [
+        match(AllergenCategory.milk, isTrace: true),
+        match(AllergenCategory.milk),
+      ],
+      profile: {AllergenCategory.milk: Severity.mild},
+      crossContaminationEnabled: true,
+    );
+    expect(result.contributions, hasLength(1));
+    expect(result.contributions.single.isTrace, isFalse);
+    expect(result.score, closeTo(1.5, 1e-9));
+  });
+
+  test('trace matches outside the profile are ignored', () {
+    final result = calculator.calculate(
+      matches: [match(AllergenCategory.egg, isTrace: true)],
+      profile: {AllergenCategory.peanut: Severity.mild},
+      crossContaminationEnabled: true,
+    );
+    expect(result.score, 0);
+    expect(result.traceWarnings, isEmpty);
   });
 }

@@ -14,9 +14,11 @@ class IngredientMatch {
     required this.ingredient,
     required this.category,
     required this.confidence,
+    this.isTrace = false,
   });
 
   final String ingredient;
   final AllergenCategory category;
   final MatchConfidence confidence;
+  final bool isTrace;
 }
