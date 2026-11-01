@@ -60,3 +60,7 @@ android/local.properties
 # Firebase configs
 google-services.json
 GoogleService-Info.plist
+
+proxy/.dev.vars
+proxy/.wrangler/
+proxy/node_modules/
