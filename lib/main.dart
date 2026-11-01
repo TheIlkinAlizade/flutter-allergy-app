@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.light(),
       home: Scaffold(
         appBar: AppBar(title: const Text(AppConfig.appName)),
-        body: const Center(child: Text('Hello, setup works!')),
+        body: const Center(child: Text('Hello, World!')),
       ),
     );
   }
