@@ -1,25 +1,21 @@
+import 'package:allergy_app/app.dart';
+import 'package:allergy_app/features/profile/profile_provider.dart';
+import 'package:allergy_app/features/profile/profile_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'config/app_config.dart';
-import 'config/app_theme.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main() {
-  runApp(const ProviderScope(child: MyApp()));
-}
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  final box = await openProfileBox();
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: AppConfig.appName,
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.light(),
-      home: Scaffold(
-        appBar: AppBar(title: const Text(AppConfig.appName)),
-        body: const Center(child: Text('Hello, World!')),
-      ),
-    );
-  }
+  runApp(
+    ProviderScope(
+      overrides: [
+        profileRepositoryProvider.overrideWithValue(ProfileRepository(box)),
+      ],
+      child: const AllergyApp(),
+    ),
+  );
 }

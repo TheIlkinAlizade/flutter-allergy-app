@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
+  const AppTheme._();
+
   static const primary = Color(0xFF0E9F8E);
   static const background = Color(0xFFF7F9FB);
   static const surface = Colors.white;
@@ -12,6 +14,10 @@ class AppTheme {
   static const safe = Color(0xFF2FB36D);
   static const caution = Color(0xFFF5A524);
   static const danger = Color(0xFFE5484D);
+
+  static const severityMild = Color(0xFFF5A524);
+  static const severityModerate = Color(0xFFEE7A2B);
+  static const severityAnaphylaxis = Color(0xFFE5484D);
 
   static ThemeData light() {
     final base = ThemeData(
@@ -34,10 +40,17 @@ class AppTheme {
       cardTheme: CardThemeData(
         color: surface,
         elevation: 0,
+        margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
           side: const BorderSide(color: border),
         ),
+      ),
+      navigationBarTheme: NavigationBarThemeData(
+        backgroundColor: surface,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        indicatorColor: primary.withValues(alpha: 0.12),
       ),
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(

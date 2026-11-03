@@ -6,4 +6,11 @@ enum Severity {
   const Severity(this.weight);
 
   final int weight;
+
+  static Severity? fromWeight(int weight) {
+    for (final severity in values) {
+      if (severity.weight == weight) return severity;
+    }
+    return null;
+  }
 }
