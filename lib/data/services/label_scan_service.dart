@@ -3,26 +3,8 @@ import 'dart:typed_data';
 
 import 'package:allergy_app/config/app_config.dart';
 import 'package:allergy_app/data/models/scan_extraction.dart';
+import 'package:allergy_app/data/models/scan_failure.dart';
 import 'package:http/http.dart' as http;
-
-enum ScanFailure {
-  notConfigured,
-  network,
-  rateLimited,
-  busy,
-  imageTooLarge,
-  unreadable,
-  server,
-}
-
-class ScanException implements Exception {
-  const ScanException(this.failure);
-
-  final ScanFailure failure;
-
-  @override
-  String toString() => 'ScanException(${failure.name})';
-}
 
 class LabelScanService {
   LabelScanService({http.Client? client, String? baseUrl})
