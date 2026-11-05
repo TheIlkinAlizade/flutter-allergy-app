@@ -6,6 +6,16 @@
       "request": "launch",
       "type": "dart",
       "args": ["--dart-define-from-file=env/dev.json"]
+    },
+    {
+      "name": "dev (web)",
+      "request": "launch",
+      "type": "dart",
+      "deviceId": "chrome",
+      "args": [
+        "--dart-define-from-file=env/dev.json",
+        "--web-port=5050"
+      ]
     }
   ]
 }

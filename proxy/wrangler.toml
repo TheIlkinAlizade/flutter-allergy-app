@@ -5,7 +5,7 @@ compatibility_date = "2026-10-01"
 [vars]
 GEMINI_MODEL = "gemini-3.6-flash"
 GEMINI_FALLBACK_MODEL = ""
-ALLOWED_ORIGINS = "http://localhost:50516"
+ALLOWED_ORIGINS = "http://localhost:5050"
 
 [[ratelimits]]
 name = "RATE_LIMITER"
