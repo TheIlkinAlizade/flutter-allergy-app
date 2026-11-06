@@ -63,7 +63,14 @@ function cleanList(value) {
     .slice(0, MAX_ITEMS);
 }
 
-function buildRequestBody(image, mimeType) {
+function buildRequestBody(image, mimeType, thinkingLevel) {
+  const generationConfig = {
+    responseMimeType: 'application/json',
+    responseSchema: RESPONSE_SCHEMA,
+  };
+  if (thinkingLevel) {
+    generationConfig.thinkingConfig = { thinkingLevel };
+  }
   return {
     systemInstruction: { parts: [{ text: SYSTEM_PROMPT }] },
     contents: [
@@ -75,10 +82,7 @@ function buildRequestBody(image, mimeType) {
         ],
       },
     ],
-    generationConfig: {
-      responseMimeType: 'application/json',
-      responseSchema: RESPONSE_SCHEMA,
-    },
+    generationConfig,
   };
 }
 
@@ -160,8 +164,11 @@ export default {
       return reply({ error: 'image_too_large' }, 413, cors);
     }
 
-    const requestBody = JSON.stringify(buildRequestBody(image, mimeType));
+    const requestBody = JSON.stringify(
+      buildRequestBody(image, mimeType, env.GEMINI_THINKING_LEVEL),
+    );
 
+    const startedAt = Date.now();
     let upstream;
     try {
       upstream = await callGemini(
@@ -185,6 +192,9 @@ export default {
       console.error('Gemini request failed', error);
       return reply({ error: 'upstream_unreachable' }, 502, cors);
     }
+    console.log(
+      `Gemini answered ${upstream.status} in ${Date.now() - startedAt} ms, image ${image.length} chars`,
+    );
 
     if (!upstream.ok) {
       const detail = (await upstream.text()).slice(0, 500);
