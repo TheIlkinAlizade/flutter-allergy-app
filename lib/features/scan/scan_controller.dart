@@ -1,6 +1,7 @@
 import 'package:allergy_app/core/scan_analyzer.dart';
 import 'package:allergy_app/data/models/scan_failure.dart';
 import 'package:allergy_app/data/models/scan_report.dart';
+import 'package:allergy_app/features/history/history_provider.dart';
 import 'package:allergy_app/features/profile/profile_provider.dart';
 import 'package:allergy_app/features/scan/image_capture_service.dart';
 import 'package:allergy_app/features/scan/scan_providers.dart';
@@ -53,21 +54,31 @@ class ScanController extends Notifier<ScanState> {
     }
 
     state = const ScanLoading();
+    final ScanReport report;
     try {
       final extraction = await ref
           .read(labelScanServiceProvider)
           .extract(image.bytes, image.mimeType);
       final matcher = await ref.read(allergenMatcherProvider.future);
-      final report = ScanAnalyzer(matcher: matcher).analyze(
-        extraction,
-        ref.read(profileProvider),
-      );
-      state = ScanSuccess(report);
+      report = ScanAnalyzer(matcher: matcher).analyze(extraction, profile);
     } on ScanException catch (error) {
       state = ScanFailed(error.failure);
+      return;
     } catch (error, stackTrace) {
       debugPrint('Unexpected scan error: $error\n$stackTrace');
       state = const ScanFailed(ScanFailure.unknown);
+      return;
+    }
+
+    await _saveToHistory(report);
+    state = ScanSuccess(report);
+  }
+
+  Future<void> _saveToHistory(ScanReport report) async {
+    try {
+      await ref.read(historyProvider.notifier).add(report);
+    } catch (error, stackTrace) {
+      debugPrint('Could not save scan to history: $error\n$stackTrace');
     }
   }
 }

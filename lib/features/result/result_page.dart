@@ -10,9 +10,15 @@ import 'package:allergy_app/shared/widgets/disclaimer_card.dart';
 import 'package:flutter/material.dart';
 
 class ResultPage extends StatelessWidget {
-  const ResultPage({required this.report, super.key});
+  const ResultPage({
+    required this.report,
+    this.fromHistory = false,
+    super.key,
+  });
 
   final ScanReport report;
+  final bool fromHistory;
+
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +48,7 @@ class ResultPage extends StatelessWidget {
           const SizedBox(height: 20),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Scan another label'),
+            child: Text(fromHistory ? 'Back to history' : 'Scan another label'),
           ),
         ],
       ),
@@ -50,17 +56,17 @@ class ResultPage extends StatelessWidget {
   }
 }
 
-class _BannerStyle {
-  const _BannerStyle({
+class RiskBannerStyle {
+  const RiskBannerStyle({
     required this.color,
     required this.icon,
     required this.title,
     required this.summary,
   });
 
-  factory _BannerStyle.of(RiskResult risk) {
+  factory RiskBannerStyle.of(RiskResult risk) {
     if (risk.level == RiskLevel.safe && risk.traceWarnings.isNotEmpty) {
-      return const _BannerStyle(
+      return const RiskBannerStyle(
         color: AppTheme.caution,
         icon: Icons.warning_amber_rounded,
         title: 'May contain allergens from your profile',
@@ -70,20 +76,20 @@ class _BannerStyle {
       );
     }
     return switch (risk.level) {
-      RiskLevel.safe => const _BannerStyle(
+      RiskLevel.safe => const RiskBannerStyle(
           color: AppTheme.safe,
           icon: Icons.check_circle_outline,
           title: 'No profile allergens detected',
           summary: 'Nothing in the scanned text matches your profile. Text '
               'recognition can miss things, so always check the package too.',
         ),
-      RiskLevel.caution => const _BannerStyle(
+      RiskLevel.caution => const RiskBannerStyle(
           color: AppTheme.caution,
           icon: Icons.warning_amber_rounded,
           title: 'Caution',
           summary: 'This product contains allergens from your profile.',
         ),
-      RiskLevel.danger => const _BannerStyle(
+      RiskLevel.danger => const RiskBannerStyle(
           color: AppTheme.danger,
           icon: Icons.dangerous_outlined,
           title: 'High risk',
@@ -106,7 +112,7 @@ class _RiskBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = _BannerStyle.of(risk);
+    final style = RiskBannerStyle.of(risk);
     final textTheme = Theme.of(context).textTheme;
     return Container(
       padding: const EdgeInsets.all(20),

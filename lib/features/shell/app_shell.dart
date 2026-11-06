@@ -1,3 +1,4 @@
+import 'package:allergy_app/features/history/history_page.dart';
 import 'package:allergy_app/features/profile/profile_page.dart';
 import 'package:allergy_app/features/scan/scan_page.dart';
 import 'package:allergy_app/features/shell/app_tab.dart';
@@ -10,11 +11,7 @@ class AppShell extends ConsumerWidget {
 
   static const _pages = <Widget>[
     ScanPage(),
-    PlaceholderPage(
-      title: 'History',
-      icon: Icons.history,
-      message: 'Your past scans will appear here.',
-    ),
+    HistoryPage(),
     ProfilePage(),
     PlaceholderPage(
       title: 'Settings',
