@@ -1,4 +1,5 @@
 import 'package:allergy_app/config/app_theme.dart';
+import 'package:allergy_app/shared/l10n_context.dart';
 import 'package:flutter/material.dart';
 
 class DisclaimerCard extends StatelessWidget {
@@ -17,9 +18,7 @@ class DisclaimerCard extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                'This app helps you read food labels but is not a substitute '
-                'for professional medical advice. Always check the packaging '
-                'and follow your doctor\'s guidance.',
+                context.l10n.disclaimer,
                 style: textTheme.bodySmall?.copyWith(
                   color: AppTheme.textMuted,
                   height: 1.4,

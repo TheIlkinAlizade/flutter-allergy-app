@@ -1,9 +1,12 @@
 import 'package:allergy_app/config/app_theme.dart';
 import 'package:allergy_app/core/text_normalizer.dart';
 import 'package:allergy_app/data/models/scan_report.dart';
+import 'package:allergy_app/features/history/clear_history_dialog.dart';
 import 'package:allergy_app/features/history/history_provider.dart';
 import 'package:allergy_app/features/profile/profile_labels.dart';
 import 'package:allergy_app/features/result/result_page.dart';
+import 'package:allergy_app/l10n/app_localizations.dart';
+import 'package:allergy_app/shared/l10n_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -25,60 +28,40 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
     super.dispose();
   }
 
-  String _searchText(ScanReport report) {
+  String _searchText(ScanReport report, AppLocalizations l10n) {
     return [
       ...report.extraction.ingredients,
       ...report.extraction.traces,
-      for (final item in report.risk.contributions) item.match.category.label,
-      for (final item in report.risk.traceWarnings) item.match.category.label,
-      for (final category in report.otherAllergens) category.label,
+      for (final item in report.risk.contributions)
+        item.match.category.label(l10n),
+      for (final item in report.risk.traceWarnings)
+        item.match.category.label(l10n),
+      for (final category in report.otherAllergens) category.label(l10n),
     ].join(' ');
   }
 
-  List<ScanReport> _filter(List<ScanReport> reports) {
+  List<ScanReport> _filter(List<ScanReport> reports, AppLocalizations l10n) {
     final query = TextNormalizer.normalize(_query);
     if (query.isEmpty) return reports;
     return reports
         .where(
-          (report) =>
-              TextNormalizer.normalize(_searchText(report)).contains(query),
+          (report) => TextNormalizer.normalize(_searchText(report, l10n))
+              .contains(query),
         )
         .toList();
   }
 
-  Future<void> _confirmClear() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Clear history?'),
-        content: const Text('All saved scans will be deleted.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Clear'),
-          ),
-        ],
-      ),
-    );
-    if (confirmed == true) {
-      await ref.read(historyProvider.notifier).clear();
-    }
-  }
-
   void _delete(ScanReport report) {
+    final l10n = context.l10n;
     final notifier = ref.read(historyProvider.notifier);
     notifier.remove(report);
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: const Text('Scan deleted'),
+          content: Text(l10n.historyDeleted),
           action: SnackBarAction(
-            label: 'Undo',
+            label: l10n.commonUndo,
             onPressed: () => notifier.add(report),
           ),
         ),
@@ -87,26 +70,24 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final reports = ref.watch(historyProvider);
-    final filtered = _filter(reports);
+    final filtered = _filter(reports, l10n);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('History'),
+        title: Text(l10n.historyTitle),
         actions: [
           if (reports.isNotEmpty)
             IconButton(
-              tooltip: 'Clear history',
+              tooltip: l10n.historyClearTooltip,
               icon: const Icon(Icons.delete_sweep_outlined),
-              onPressed: _confirmClear,
+              onPressed: () => confirmAndClearHistory(context, ref),
             ),
         ],
       ),
       body: reports.isEmpty
-          ? const _Message(
-              icon: Icons.history,
-              text: 'Your past scans will appear here.',
-            )
+          ? _Message(icon: Icons.history, text: l10n.historyEmpty)
           : Column(
               children: [
                 Padding(
@@ -115,7 +96,7 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
                     controller: _searchController,
                     onChanged: (value) => setState(() => _query = value),
                     decoration: InputDecoration(
-                      hintText: 'Search ingredients or allergens',
+                      hintText: l10n.historySearchHint,
                       prefixIcon: const Icon(Icons.search),
                       suffixIcon: _query.isEmpty
                           ? null
@@ -141,9 +122,9 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
                 ),
                 Expanded(
                   child: filtered.isEmpty
-                      ? const _Message(
+                      ? _Message(
                           icon: Icons.search_off,
-                          text: 'No scans match your search.',
+                          text: l10n.historyNoMatches,
                         )
                       : ListView.separated(
                           padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
@@ -199,11 +180,15 @@ class _HistoryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final textTheme = Theme.of(context).textTheme;
-    final style = RiskBannerStyle.of(report.risk);
+    final style = RiskBannerStyle.of(report.risk, l10n);
+    final localeName = Localizations.localeOf(context).toString();
     final flagged = {
-      for (final item in report.risk.contributions) item.match.category.label,
-      for (final item in report.risk.traceWarnings) item.match.category.label,
+      for (final item in report.risk.contributions)
+        item.match.category.label(l10n),
+      for (final item in report.risk.traceWarnings)
+        item.match.category.label(l10n),
     }.join(', ');
 
     return Card(
@@ -232,7 +217,9 @@ class _HistoryTile extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      DateFormat.yMMMd().add_Hm().format(report.scannedAt),
+                      DateFormat.yMMMd(localeName)
+                          .add_Hm()
+                          .format(report.scannedAt),
                       style: textTheme.bodySmall
                           ?.copyWith(color: AppTheme.textMuted),
                     ),

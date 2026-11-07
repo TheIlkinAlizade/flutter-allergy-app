@@ -3,6 +3,7 @@ import 'package:allergy_app/data/models/allergen_category.dart';
 import 'package:allergy_app/features/profile/profile_provider.dart';
 import 'package:allergy_app/features/profile/widgets/allergen_tile.dart';
 import 'package:allergy_app/features/profile/widgets/cross_contamination_card.dart';
+import 'package:allergy_app/shared/l10n_context.dart';
 import 'package:allergy_app/shared/widgets/disclaimer_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,17 +13,17 @@ class ProfilePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final profile = ref.watch(profileProvider);
     final notifier = ref.read(profileProvider.notifier);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Allergy profile')),
+      appBar: AppBar(title: Text(l10n.profileTitle)),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
         children: [
           Text(
-            'Select the allergens you react to and how severe the reaction is. '
-            'Scan results are scored against this profile.',
+            l10n.profileIntro,
             style: Theme.of(context)
                 .textTheme
                 .bodyMedium

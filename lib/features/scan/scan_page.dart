@@ -4,11 +4,12 @@ import 'package:allergy_app/config/app_theme.dart';
 import 'package:allergy_app/data/models/scan_failure.dart';
 import 'package:allergy_app/features/profile/profile_provider.dart';
 import 'package:allergy_app/features/result/result_page.dart';
+import 'package:allergy_app/features/scan/image_capture_service.dart';
 import 'package:allergy_app/features/scan/scan_controller.dart';
 import 'package:allergy_app/features/scan/scan_failure_labels.dart';
 import 'package:allergy_app/features/scan/scan_providers.dart';
-import 'package:allergy_app/features/scan/image_capture_service.dart';
 import 'package:allergy_app/features/shell/app_tab.dart';
+import 'package:allergy_app/shared/l10n_context.dart';
 import 'package:allergy_app/shared/widgets/disclaimer_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,6 +47,8 @@ class _ScanPageState extends ConsumerState<ScanPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+
     ref.listen<ScanState>(scanControllerProvider, (previous, next) {
       if (next is! ScanSuccess) return;
       Navigator.of(context).push(
@@ -64,7 +67,7 @@ class _ScanPageState extends ConsumerState<ScanPage> {
     final canScan = !loading && !needsProfile;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Scan label')),
+      appBar: AppBar(title: Text(l10n.scanTitle)),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
         children: [
@@ -88,13 +91,13 @@ class _ScanPageState extends ConsumerState<ScanPage> {
           FilledButton.icon(
             onPressed: canScan ? () => _pick(ImageSource.camera) : null,
             icon: const Icon(Icons.photo_camera_outlined),
-            label: const Text('Take photo'),
+            label: Text(l10n.scanTakePhoto),
           ),
           const SizedBox(height: 12),
           OutlinedButton.icon(
             onPressed: canScan ? () => _pick(ImageSource.gallery) : null,
             icon: const Icon(Icons.photo_library_outlined),
-            label: const Text('Choose from gallery'),
+            label: Text(l10n.scanChooseGallery),
             style: OutlinedButton.styleFrom(
               minimumSize: const Size.fromHeight(52),
               foregroundColor: AppTheme.textDark,
@@ -117,6 +120,7 @@ class _TipsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final textTheme = Theme.of(context).textTheme;
     return Card(
       child: Padding(
@@ -128,19 +132,17 @@ class _TipsCard extends StatelessWidget {
               children: [
                 const Icon(Icons.lightbulb_outline, color: AppTheme.primary),
                 const SizedBox(width: 10),
-                Text(
-                  'For the best result',
-                  style: textTheme.titleSmall
-                      ?.copyWith(fontWeight: FontWeight.w600),
+                Expanded(
+                  child: Text(
+                    l10n.scanTipsTitle,
+                    style: textTheme.titleSmall
+                        ?.copyWith(fontWeight: FontWeight.w600),
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 12),
-            for (final tip in const [
-              'Fill the frame with the whole ingredient list.',
-              'Use good light and avoid glare on the packaging.',
-              'Include any "may contain" or "traces of" warning.',
-            ])
+            for (final tip in [l10n.scanTip1, l10n.scanTip2, l10n.scanTip3])
               Padding(
                 padding: const EdgeInsets.only(bottom: 6),
                 child: Text(
@@ -186,7 +188,7 @@ class _LoadingCard extends StatelessWidget {
             const LinearProgressIndicator(),
             const SizedBox(height: 12),
             Text(
-              'Reading the label',
+              context.l10n.scanReading,
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium
@@ -216,7 +218,7 @@ class _FailureCard extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                failure.message,
+                failure.message(context.l10n),
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium
@@ -237,6 +239,7 @@ class _ProfileRequiredCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -247,19 +250,20 @@ class _ProfileRequiredCard extends StatelessWidget {
               children: [
                 const Icon(Icons.shield_outlined, color: AppTheme.caution),
                 const SizedBox(width: 10),
-                Text(
-                  'Set up your profile first',
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleSmall
-                      ?.copyWith(fontWeight: FontWeight.w600),
+                Expanded(
+                  child: Text(
+                    l10n.scanProfileRequiredTitle,
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleSmall
+                        ?.copyWith(fontWeight: FontWeight.w600),
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 8),
             Text(
-              'Select the allergens you react to. Without a profile, a scan '
-              'has nothing to check the label against.',
+              l10n.scanProfileRequiredBody,
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium
@@ -268,7 +272,7 @@ class _ProfileRequiredCard extends StatelessWidget {
             const SizedBox(height: 8),
             TextButton(
               onPressed: onOpenProfile,
-              child: const Text('Open profile'),
+              child: Text(l10n.scanOpenProfile),
             ),
           ],
         ),

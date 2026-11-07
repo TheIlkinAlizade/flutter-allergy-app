@@ -17,12 +17,3 @@ class ProfileRepository {
 
   Future<void> save(UserProfile profile) => _box.put(_key, profile.toJson());
 }
-
-Future<Box<dynamic>> openProfileBox() async {
-  try {
-    return await Hive.openBox<dynamic>(ProfileRepository.boxName);
-  } catch (_) {
-    await Hive.deleteBoxFromDisk(ProfileRepository.boxName);
-    return Hive.openBox<dynamic>(ProfileRepository.boxName);
-  }
-}

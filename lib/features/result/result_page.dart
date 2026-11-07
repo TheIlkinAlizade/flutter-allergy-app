@@ -1,11 +1,13 @@
 import 'package:allergy_app/config/app_theme.dart';
 import 'package:allergy_app/core/risk_calculator.dart';
 import 'package:allergy_app/core/risk_constants.dart';
+import 'package:allergy_app/data/models/allergen_category.dart';
 import 'package:allergy_app/data/models/ingredient_match.dart';
 import 'package:allergy_app/data/models/scan_extraction.dart';
 import 'package:allergy_app/data/models/scan_report.dart';
-import 'package:allergy_app/data/models/allergen_category.dart';
 import 'package:allergy_app/features/profile/profile_labels.dart';
+import 'package:allergy_app/l10n/app_localizations.dart';
+import 'package:allergy_app/shared/l10n_context.dart';
 import 'package:allergy_app/shared/widgets/disclaimer_card.dart';
 import 'package:flutter/material.dart';
 
@@ -19,12 +21,12 @@ class ResultPage extends StatelessWidget {
   final ScanReport report;
   final bool fromHistory;
 
-
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final risk = report.risk;
     return Scaffold(
-      appBar: AppBar(title: const Text('Scan result')),
+      appBar: AppBar(title: Text(l10n.resultTitle)),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
         children: [
@@ -48,7 +50,7 @@ class ResultPage extends StatelessWidget {
           const SizedBox(height: 20),
           FilledButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: Text(fromHistory ? 'Back to history' : 'Scan another label'),
+            child: Text(fromHistory ? l10n.backToHistory : l10n.scanAnother),
           ),
         ],
       ),
@@ -64,37 +66,33 @@ class RiskBannerStyle {
     required this.summary,
   });
 
-  factory RiskBannerStyle.of(RiskResult risk) {
+  factory RiskBannerStyle.of(RiskResult risk, AppLocalizations l10n) {
     if (risk.level == RiskLevel.safe && risk.traceWarnings.isNotEmpty) {
-      return const RiskBannerStyle(
+      return RiskBannerStyle(
         color: AppTheme.caution,
         icon: Icons.warning_amber_rounded,
-        title: 'May contain allergens from your profile',
-        summary: 'The label has "may contain" warnings for allergens in your '
-            'profile. They are not counted in the score because that '
-            'setting is turned off.',
+        title: l10n.riskTraceOnlyTitle,
+        summary: l10n.riskTraceOnlySummary,
       );
     }
     return switch (risk.level) {
-      RiskLevel.safe => const RiskBannerStyle(
+      RiskLevel.safe => RiskBannerStyle(
           color: AppTheme.safe,
           icon: Icons.check_circle_outline,
-          title: 'No profile allergens detected',
-          summary: 'Nothing in the scanned text matches your profile. Text '
-              'recognition can miss things, so always check the package too.',
+          title: l10n.riskNoneTitle,
+          summary: l10n.riskNoneSummary,
         ),
-      RiskLevel.caution => const RiskBannerStyle(
+      RiskLevel.caution => RiskBannerStyle(
           color: AppTheme.caution,
           icon: Icons.warning_amber_rounded,
-          title: 'Caution',
-          summary: 'This product contains allergens from your profile.',
+          title: l10n.riskCautionTitle,
+          summary: l10n.riskCautionSummary,
         ),
-      RiskLevel.danger => const RiskBannerStyle(
+      RiskLevel.danger => RiskBannerStyle(
           color: AppTheme.danger,
           icon: Icons.dangerous_outlined,
-          title: 'High risk',
-          summary: 'Avoid this product. It contains allergens from your '
-              'profile with a high risk score.',
+          title: l10n.riskDangerTitle,
+          summary: l10n.riskDangerSummary,
         ),
     };
   }
@@ -112,7 +110,8 @@ class _RiskBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final style = RiskBannerStyle.of(risk);
+    final l10n = context.l10n;
+    final style = RiskBannerStyle.of(risk, l10n);
     final textTheme = Theme.of(context).textTheme;
     return Container(
       padding: const EdgeInsets.all(20),
@@ -140,10 +139,13 @@ class _RiskBanner extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          Text(style.summary, style: textTheme.bodyMedium?.copyWith(height: 1.4)),
+          Text(
+            style.summary,
+            style: textTheme.bodyMedium?.copyWith(height: 1.4),
+          ),
           const SizedBox(height: 12),
           Text(
-            'Risk score ${risk.score.toStringAsFixed(1)}',
+            l10n.riskScoreWithValue(risk.score.toStringAsFixed(1)),
             style: textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
           ),
         ],
@@ -196,9 +198,11 @@ class _SectionCard extends StatelessWidget {
   }
 }
 
-String _kindLabel(IngredientMatch match) {
-  if (match.isTrace) return 'May contain';
-  return match.confidence == MatchConfidence.direct ? 'Listed' : 'Derived';
+String _kindLabel(IngredientMatch match, AppLocalizations l10n) {
+  if (match.isTrace) return l10n.kindMayContain;
+  return match.confidence == MatchConfidence.direct
+      ? l10n.kindListed
+      : l10n.kindDerived;
 }
 
 class _BreakdownCard extends StatelessWidget {
@@ -208,12 +212,13 @@ class _BreakdownCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final textTheme = Theme.of(context).textTheme;
     final rows = [...risk.contributions]
       ..sort((a, b) => b.value.compareTo(a.value));
 
     return _SectionCard(
-      title: 'Why this score',
+      title: l10n.breakdownTitle,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -222,9 +227,9 @@ class _BreakdownCard extends StatelessWidget {
           if (risk.crossContaminationApplied) ...[
             const SizedBox(height: 8),
             Text(
-              'Listed ingredients are multiplied by '
-              '${1 + RiskConstants.crossContaminationFactor} because the label '
-              'has a "may contain" warning.',
+              l10n.crossFactorNote(
+                '${1 + RiskConstants.crossContaminationFactor}',
+              ),
               style: textTheme.bodySmall?.copyWith(
                 color: AppTheme.textMuted,
                 height: 1.4,
@@ -236,7 +241,7 @@ class _BreakdownCard extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  'Risk score',
+                  l10n.riskScoreLabel,
                   style: textTheme.titleSmall
                       ?.copyWith(fontWeight: FontWeight.w700),
                 ),
@@ -261,6 +266,7 @@ class _ContributionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final textTheme = Theme.of(context).textTheme;
     final match = contribution.match;
     return Padding(
@@ -285,14 +291,14 @@ class _ContributionRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  match.category.label,
+                  match.category.label(l10n),
                   style: textTheme.bodyMedium
                       ?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  '${_kindLabel(match)} · "${match.ingredient}" · '
-                  '${contribution.severity.label}',
+                  '${_kindLabel(match, l10n)} · "${match.ingredient}" · '
+                  '${contribution.severity.label(l10n)}',
                   style: textTheme.bodySmall?.copyWith(
                     color: AppTheme.textMuted,
                     height: 1.3,
@@ -319,12 +325,11 @@ class _TraceWarningsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final textTheme = Theme.of(context).textTheme;
     return _SectionCard(
-      title: 'Trace warnings, not scored',
-      subtitle: 'These allergens are in your profile but only appear in a '
-          '"may contain" warning. Turn on "Include may contain warnings" in '
-          'your profile to count them.',
+      title: l10n.traceWarningsTitle,
+      subtitle: l10n.traceWarningsSubtitle,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -332,8 +337,9 @@ class _TraceWarningsCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4),
               child: Text(
-                '${warning.match.category.label} · "${warning.match.ingredient}" '
-                '· ${warning.severity.label}',
+                '${warning.match.category.label(l10n)} · '
+                '"${warning.match.ingredient}" · '
+                '${warning.severity.label(l10n)}',
                 style: textTheme.bodyMedium,
               ),
             ),
@@ -350,16 +356,17 @@ class _OtherAllergensCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return _SectionCard(
-      title: 'Also found, not in your profile',
-      subtitle: 'These do not affect the score.',
+      title: l10n.otherAllergensTitle,
+      subtitle: l10n.otherAllergensSubtitle,
       child: Wrap(
         spacing: 8,
         runSpacing: 8,
         children: [
           for (final category in categories)
             Chip(
-              label: Text(category.label),
+              label: Text(category.label(l10n)),
               backgroundColor: AppTheme.background,
               side: const BorderSide(color: AppTheme.border),
             ),
@@ -376,17 +383,17 @@ class _RecognizedTextCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final textTheme = Theme.of(context).textTheme;
     return _SectionCard(
-      title: 'What was read from the label',
-      subtitle: 'Compare this with the package. Text recognition can make '
-          'mistakes.',
+      title: l10n.recognizedTitle,
+      subtitle: l10n.recognizedSubtitle,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (extraction.ingredients.isNotEmpty) ...[
             Text(
-              'Ingredients',
+              l10n.recognizedIngredients,
               style: textTheme.bodySmall?.copyWith(
                 color: AppTheme.textMuted,
                 fontWeight: FontWeight.w600,
@@ -401,7 +408,7 @@ class _RecognizedTextCard extends StatelessWidget {
           if (extraction.traces.isNotEmpty) ...[
             const SizedBox(height: 12),
             Text(
-              'May contain',
+              l10n.recognizedMayContain,
               style: textTheme.bodySmall?.copyWith(
                 color: AppTheme.textMuted,
                 fontWeight: FontWeight.w600,

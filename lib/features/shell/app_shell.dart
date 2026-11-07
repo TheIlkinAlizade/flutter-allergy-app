@@ -1,8 +1,9 @@
 import 'package:allergy_app/features/history/history_page.dart';
 import 'package:allergy_app/features/profile/profile_page.dart';
 import 'package:allergy_app/features/scan/scan_page.dart';
+import 'package:allergy_app/features/settings/settings_page.dart';
 import 'package:allergy_app/features/shell/app_tab.dart';
-import 'package:allergy_app/shared/widgets/placeholder_page.dart';
+import 'package:allergy_app/shared/l10n_context.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,15 +14,12 @@ class AppShell extends ConsumerWidget {
     ScanPage(),
     HistoryPage(),
     ProfilePage(),
-    PlaceholderPage(
-      title: 'Settings',
-      icon: Icons.settings_outlined,
-      message: 'Language and app settings will appear here.',
-    ),
+    SettingsPage(),
   ];
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final tab = ref.watch(selectedTabProvider);
 
     return Scaffold(
@@ -31,25 +29,25 @@ class AppShell extends ConsumerWidget {
         onDestinationSelected: (value) => ref
             .read(selectedTabProvider.notifier)
             .select(AppTab.values[value]),
-        destinations: const [
+        destinations: [
           NavigationDestination(
-            icon: Icon(Icons.document_scanner_outlined),
-            selectedIcon: Icon(Icons.document_scanner),
-            label: 'Scan',
+            icon: const Icon(Icons.document_scanner_outlined),
+            selectedIcon: const Icon(Icons.document_scanner),
+            label: l10n.navScan,
           ),
           NavigationDestination(
-            icon: Icon(Icons.history),
-            label: 'History',
+            icon: const Icon(Icons.history),
+            label: l10n.navHistory,
           ),
           NavigationDestination(
-            icon: Icon(Icons.shield_outlined),
-            selectedIcon: Icon(Icons.shield),
-            label: 'Profile',
+            icon: const Icon(Icons.shield_outlined),
+            selectedIcon: const Icon(Icons.shield),
+            label: l10n.navProfile,
           ),
           NavigationDestination(
-            icon: Icon(Icons.settings_outlined),
-            selectedIcon: Icon(Icons.settings),
-            label: 'Settings',
+            icon: const Icon(Icons.settings_outlined),
+            selectedIcon: const Icon(Icons.settings),
+            label: l10n.navSettings,
           ),
         ],
       ),

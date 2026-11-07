@@ -39,7 +39,9 @@ dependencies:
   hive_flutter: ^1.1.0
   image_picker: ^1.2.4
   http: ^1.6.0
-  intl: ^0.20.3
+  intl: 0.20.2
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:
@@ -62,7 +64,7 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-  
+  generate: true
   assets:
     - assets/data/allergen_dictionary.json
 

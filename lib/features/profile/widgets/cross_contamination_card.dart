@@ -1,4 +1,5 @@
 import 'package:allergy_app/config/app_theme.dart';
+import 'package:allergy_app/shared/l10n_context.dart';
 import 'package:flutter/material.dart';
 
 class CrossContaminationCard extends StatelessWidget {
@@ -13,6 +14,7 @@ class CrossContaminationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final textTheme = Theme.of(context).textTheme;
     return Card(
       child: Padding(
@@ -34,14 +36,13 @@ class CrossContaminationCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Include "may contain" warnings',
+                    l10n.crossTitle,
                     style: textTheme.titleSmall
                         ?.copyWith(fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Counts traces and shared-production-line warnings in the '
-                    'risk score. Recommended for severe allergies.',
+                    l10n.crossBody,
                     style: textTheme.bodySmall?.copyWith(
                       color: AppTheme.textMuted,
                       height: 1.4,

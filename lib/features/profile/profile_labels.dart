@@ -1,49 +1,50 @@
 import 'package:allergy_app/config/app_theme.dart';
 import 'package:allergy_app/data/models/allergen_category.dart';
 import 'package:allergy_app/data/models/severity.dart';
+import 'package:allergy_app/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 extension AllergenCategoryLabels on AllergenCategory {
-  String get label => switch (this) {
-        AllergenCategory.peanut => 'Peanut',
-        AllergenCategory.treeNut => 'Tree nuts',
-        AllergenCategory.milk => 'Milk and dairy',
-        AllergenCategory.egg => 'Egg',
-        AllergenCategory.gluten => 'Gluten',
-        AllergenCategory.soy => 'Soy',
-        AllergenCategory.fish => 'Fish',
-        AllergenCategory.shellfish => 'Shellfish',
-        AllergenCategory.sesame => 'Sesame',
-        AllergenCategory.celery => 'Celery',
-        AllergenCategory.mustard => 'Mustard',
-        AllergenCategory.lupin => 'Lupin',
-        AllergenCategory.sulphites => 'Sulphites',
-        AllergenCategory.additives => 'Food additives',
+  String label(AppLocalizations l10n) => switch (this) {
+        AllergenCategory.peanut => l10n.allergenPeanut,
+        AllergenCategory.treeNut => l10n.allergenTreeNut,
+        AllergenCategory.milk => l10n.allergenMilk,
+        AllergenCategory.egg => l10n.allergenEgg,
+        AllergenCategory.gluten => l10n.allergenGluten,
+        AllergenCategory.soy => l10n.allergenSoy,
+        AllergenCategory.fish => l10n.allergenFish,
+        AllergenCategory.shellfish => l10n.allergenShellfish,
+        AllergenCategory.sesame => l10n.allergenSesame,
+        AllergenCategory.celery => l10n.allergenCelery,
+        AllergenCategory.mustard => l10n.allergenMustard,
+        AllergenCategory.lupin => l10n.allergenLupin,
+        AllergenCategory.sulphites => l10n.allergenSulphites,
+        AllergenCategory.additives => l10n.allergenAdditives,
       };
 
-  String get examples => switch (this) {
-        AllergenCategory.peanut => 'Groundnuts, peanut oil',
-        AllergenCategory.treeNut => 'Almond, hazelnut, walnut, cashew',
-        AllergenCategory.milk => 'Milk, cheese, whey, lactose',
-        AllergenCategory.egg => 'Egg, albumin, mayonnaise',
-        AllergenCategory.gluten => 'Wheat, barley, rye, oats',
-        AllergenCategory.soy => 'Soy, tofu, soy lecithin',
-        AllergenCategory.fish => 'Salmon, tuna, cod, anchovy',
-        AllergenCategory.shellfish => 'Shrimp, crab, mussels, squid',
-        AllergenCategory.sesame => 'Sesame seeds, tahini',
-        AllergenCategory.celery => 'Celery, celeriac',
-        AllergenCategory.mustard => 'Mustard seed, mustard flour',
-        AllergenCategory.lupin => 'Lupin flour and seeds',
-        AllergenCategory.sulphites => 'Sulphur dioxide, E220 to E228',
-        AllergenCategory.additives => 'Certain colours, preservatives, E621',
+  String examples(AppLocalizations l10n) => switch (this) {
+        AllergenCategory.peanut => l10n.allergenPeanutExamples,
+        AllergenCategory.treeNut => l10n.allergenTreeNutExamples,
+        AllergenCategory.milk => l10n.allergenMilkExamples,
+        AllergenCategory.egg => l10n.allergenEggExamples,
+        AllergenCategory.gluten => l10n.allergenGlutenExamples,
+        AllergenCategory.soy => l10n.allergenSoyExamples,
+        AllergenCategory.fish => l10n.allergenFishExamples,
+        AllergenCategory.shellfish => l10n.allergenShellfishExamples,
+        AllergenCategory.sesame => l10n.allergenSesameExamples,
+        AllergenCategory.celery => l10n.allergenCeleryExamples,
+        AllergenCategory.mustard => l10n.allergenMustardExamples,
+        AllergenCategory.lupin => l10n.allergenLupinExamples,
+        AllergenCategory.sulphites => l10n.allergenSulphitesExamples,
+        AllergenCategory.additives => l10n.allergenAdditivesExamples,
       };
 }
 
 extension SeverityLabels on Severity {
-  String get label => switch (this) {
-        Severity.mild => 'Mild',
-        Severity.moderate => 'Moderate',
-        Severity.anaphylaxis => 'Anaphylaxis',
+  String label(AppLocalizations l10n) => switch (this) {
+        Severity.mild => l10n.severityMild,
+        Severity.moderate => l10n.severityModerate,
+        Severity.anaphylaxis => l10n.severityAnaphylaxis,
       };
 
   Color get color => switch (this) {

@@ -48,12 +48,3 @@ class HistoryRepository {
     await _box.deleteAll(keys.take(overflow));
   }
 }
-
-Future<Box<dynamic>> openHistoryBox() async {
-  try {
-    return await Hive.openBox<dynamic>(HistoryRepository.boxName);
-  } catch (_) {
-    await Hive.deleteBoxFromDisk(HistoryRepository.boxName);
-    return Hive.openBox<dynamic>(HistoryRepository.boxName);
-  }
-}

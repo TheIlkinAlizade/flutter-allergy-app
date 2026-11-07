@@ -2,6 +2,7 @@ import 'package:allergy_app/config/app_theme.dart';
 import 'package:allergy_app/data/models/allergen_category.dart';
 import 'package:allergy_app/data/models/severity.dart';
 import 'package:allergy_app/features/profile/profile_labels.dart';
+import 'package:allergy_app/shared/l10n_context.dart';
 import 'package:flutter/material.dart';
 
 class AllergenTile extends StatelessWidget {
@@ -20,6 +21,7 @@ class AllergenTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final textTheme = Theme.of(context).textTheme;
     final selected = severity != null;
 
@@ -53,13 +55,13 @@ class AllergenTile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            category.label,
+                            category.label(l10n),
                             style: textTheme.titleSmall
                                 ?.copyWith(fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            category.examples,
+                            category.examples(l10n),
                             style: textTheme.bodySmall
                                 ?.copyWith(color: AppTheme.textMuted),
                           ),
@@ -77,7 +79,7 @@ class AllergenTile extends StatelessWidget {
                     children: [
                       for (final option in Severity.values)
                         ChoiceChip(
-                          label: Text(option.label),
+                          label: Text(option.label(l10n)),
                           selected: severity == option,
                           showCheckmark: false,
                           backgroundColor: AppTheme.surface,
