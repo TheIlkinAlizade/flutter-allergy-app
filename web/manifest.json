@@ -1,11 +1,11 @@
 {
-    "name": "allergy_app",
-    "short_name": "allergy_app",
+    "name": "AllergyCheck",
+    "short_name": "AllergyCheck",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Food allergen risk checker",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
