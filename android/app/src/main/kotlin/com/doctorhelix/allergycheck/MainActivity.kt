@@ -1,4 +1,4 @@
-package com.doctorhelix.allergy_app
+package com.doctorhelix.allergycheck
 
 import io.flutter.embedding.android.FlutterActivity
 
